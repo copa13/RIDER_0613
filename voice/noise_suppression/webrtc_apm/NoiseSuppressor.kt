@@ -1,44 +1,35 @@
 package com.rider.noise_suppression.webrtc_apm
 
+import org.webrtc.AudioProcessing
+import org.webrtc.AudioProcessingBuilder
+import org.webrtc.NoiseSuppression
+
 class NoiseSuppressor {
 
-    private var initialized = false
+    private var audioProcessing: AudioProcessing? = null
 
     fun start() {
-        if (initialized) return
+        if (audioProcessing != null) return
 
-        nativeStart()
-        initialized = true
+        val builder = AudioProcessingBuilder()
+
+        val noiseSuppression = builder.createNoiseSuppression()
+        noiseSuppression.enable(true)
+        noiseSuppression.level = NoiseSuppression.Level.HIGH
+
+        audioProcessing = builder.createAudioProcessing()
     }
 
-    fun process(
-        samples: ShortArray,
-        sampleRate: Int
-    ): ShortArray {
-
-        check(initialized) {
+    fun process(frame: org.webrtc.AudioFrame) {
+        check(audioProcessing != null) {
             "Noise suppressor is not started"
         }
 
-        return nativeProcess(
-            samples,
-            sampleRate
-        )
+        audioProcessing?.processFrame(frame)
     }
 
     fun stop() {
-        if (!initialized) return
-
-        nativeStop()
-        initialized = false
+        audioProcessing?.release()
+        audioProcessing = null
     }
-
-    private external fun nativeStart()
-
-    private external fun nativeProcess(
-        samples: ShortArray,
-        sampleRate: Int
-    ): ShortArray
-
-    private external fun nativeStop()
 }
