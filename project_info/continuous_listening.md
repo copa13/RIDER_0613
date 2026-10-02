@@ -117,3 +117,46 @@ Selected: sherpa-onnx - Keyword Spotter
 
 Status: Reference code stored
 Build integration: Not started
+# VISHU / RIDER - Feature #8
+# Wake-Word Without Listening
+
+## Software/Projects Found
+
+1. sherpa-onnx - Continuous/Streaming ASR
+2. Takeout Assistant
+3. Android Speech Recognition
+4. Vosk Android Wake-Word Sample
+5. Offline Android Speech Recognition
+6. NOVA
+
+## Total Options
+
+6
+
+## Selected Software
+
+sherpa-onnx - Continuous/Streaming ASR
+
+## Reason
+
+RIDER already uses sherpa-onnx for:
+
+- Continuous Listening
+- VAD
+- End-of-Speech Detection
+- Wake-Word Mode
+
+Using the same sherpa-onnx speech pipeline for
+wake-word-free listening keeps the system modular
+and avoids adding another speech recognition engine.
+
+It also supports Android and local/offline processing.
+
+## RIDER Usage
+
+Feature: #8 Wake-Word Without Listening
+
+Selected: sherpa-onnx - Continuous/Streaming ASR
+
+Status: Reference identified
+Build integration: Not started
