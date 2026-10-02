@@ -6,8 +6,7 @@ import android.media.MediaRecorder
 import com.k2fsa.sherpa.onnx.KeywordSpotter
 
 class RiderWakeWord(
-    private val kws: KeywordSpotter,
-    private val wakeWord: String = "hello rider"
+    private val kws: KeywordSpotter
 ) {
     private val sampleRate = 16000
     private val channel = AudioFormat.CHANNEL_IN_MONO
@@ -18,6 +17,7 @@ class RiderWakeWord(
 
     fun start(onWakeWord: () -> Unit) {
         if (running) return
+
         running = true
 
         val minBuffer = AudioRecord.getMinBufferSize(
@@ -61,13 +61,16 @@ class RiderWakeWord(
                 while (kws.isReady(stream)) {
                     kws.decode(stream)
 
-                    val detected = kws
+                    val keyword = kws
                         .getResult(stream)
                         .keyword
                         .trim()
-                        .equals(wakeWord, ignoreCase = true)
 
-                    if (detected) {
+                    if (keyword.equals(
+                            "hello rider",
+                            ignoreCase = true
+                        )
+                    ) {
                         kws.reset(stream)
                         onWakeWord()
                     }
