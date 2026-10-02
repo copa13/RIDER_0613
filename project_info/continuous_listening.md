@@ -73,3 +73,47 @@ Selected: sherpa-onnx - Endpoint Detection
 
 Status: Reference identified
 Build integration: Not started
+
+# VISHU / RIDER - Feature #7
+# Wake-Word Mode
+
+## Software/Projects Found
+
+1. sherpa-onnx - Keyword Spotter
+2. openWakeWord
+3. Porcupine
+4. Vosk/Kaldi Keyword Spotting
+5. Mycroft Precise
+6. sherpa-onnx based Android Wake Word projects
+
+## Total Options
+
+6
+
+## Selected Software
+
+sherpa-onnx - Keyword Spotter
+
+## Reason
+
+RIDER already uses sherpa-onnx for Continuous Listening,
+VAD, and End-of-Speech Detection.
+
+The sherpa-onnx Keyword Spotter provides an offline
+Android-compatible wake-word detection pipeline.
+
+It can be connected to the existing RIDER speech pipeline
+without adding a separate wake-word engine.
+
+## RIDER Wake Word
+
+Hello Rider
+
+## RIDER Usage
+
+Feature: #7 Wake-Word Mode
+
+Selected: sherpa-onnx - Keyword Spotter
+
+Status: Reference code stored
+Build integration: Not started
