@@ -26,3 +26,9 @@ Selected: sherpa-onnx
 
 Status: Reference code stored
 Build integration: Not started
+
+#5 VAD
+
+Software: sherpa-onnx
+VAD model: Silero VAD
+Status: Selected
