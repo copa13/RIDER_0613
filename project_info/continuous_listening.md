@@ -1,3 +1,4 @@
+
 # VISHU / RIDER - Feature #1
 # Continuous Listening
 
@@ -157,6 +158,46 @@ It also supports Android and local/offline processing.
 Feature: #8 Wake-Word Without Listening
 
 Selected: sherpa-onnx - Continuous/Streaming ASR
+
+Status: Reference identified
+Build integration: Not started
+
+# VISHU / RIDER - Feature #9
+# Multiple Language STT
+
+## Software/Projects Found
+
+1. sherpa-onnx
+2. EV On-Device ASR Demo
+3. sherpa-onnx React Native
+4. sherpa-onnx Offline ASR
+
+## Total Options
+
+4
+
+## Selected Software
+
+sherpa-onnx
+
+## Reason
+
+RIDER already uses sherpa-onnx for the existing
+speech pipeline.
+
+sherpa-onnx supports spoken language identification
+and multilingual speech recognition.
+
+It supports Android and local/offline processing.
+
+Using the same ecosystem avoids adding another
+separate STT engine.
+
+## RIDER Usage
+
+Feature: #9 Multiple Language STT
+
+Selected: sherpa-onnx
 
 Status: Reference identified
 Build integration: Not started
