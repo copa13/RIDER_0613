@@ -1,0 +1,4 @@
+.gradle/
+**/build/
+app/libs/sherpa-onnx-1.13.8.aar
+app/src/main/assets/silero_vad_v5.onnx
