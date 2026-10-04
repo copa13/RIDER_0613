@@ -40,7 +40,7 @@ Implemented for #31 only:
 
 - RiderVad uses sherpa-onnx Silero VAD v5; no energy/amplitude threshold is used.
 - An Android AudioRecord monitor connects microphone PCM through the Feature #29 echo-reference interface to Silero VAD.
-- The existing Feature #21 BargeInController is reused to cancel response state and stop active TTS on speech onset; the duplicate amplitude-threshold controller was removed.
+- The existing Feature #21 BargeInController is reused; its Feature #31 session calls the existing Feature #20 TtsPauseStop MediaPlayer to stop real playback and invalidates active response state on speech onset. The duplicate amplitude-threshold controller was removed.
 - CancellableAiResponseState provides cancellable request handles, generation tokens, and stale-chunk rejection.
 - A minimal Android library module downloads the pinned sherpa-onnx runtime and model with SHA-256 verification; it does not add an app UI or AI provider.
 - Unit tests were added for cancellation, stale chunks, and one-shot TTS stop behavior.

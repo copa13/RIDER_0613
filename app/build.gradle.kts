@@ -77,7 +77,8 @@ android {
         java.srcDirs(
             "src/main/kotlin",
             "../voice/continuous_listening/sherpa_onnx",
-            "../voice/user_speech_stops_tts/sherpa_onnx"
+            "../voice/user_speech_stops_tts/sherpa_onnx",
+            "../voice/tts_pause_stop/sherpa_onnx"
         )
         manifest.srcFile("src/main/AndroidManifest.xml")
         assets.srcDir("src/main/assets")
