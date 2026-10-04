@@ -35,7 +35,7 @@ class Feature31BargeInTest {
     }
 
     @Test
-    fun bargeInCancelsResponseAndStopsTtsOnlyOnce() {
+    fun bargeInStopsTtsImmediatelyThenCancelsResponseOnlyOnce() {
         val events = mutableListOf<String>()
         val controller = BargeInController(
             stopTts = { events.add("stop") },
@@ -46,7 +46,7 @@ class Feature31BargeInTest {
         controller.onUserSpeechDetected()
         controller.onUserSpeechDetected()
 
-        assertEquals(listOf("cancel", "stop"), events)
+        assertEquals(listOf("stop", "cancel"), events)
         assertFalse(controller.isTtsPlaying())
     }
 }

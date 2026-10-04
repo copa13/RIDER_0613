@@ -16,7 +16,7 @@ class BargeInController(
         synchronized(lock) { ttsPlaying = false }
     }
 
-    /** Invalidate/cancel the current response, then stop playback exactly once. */
+    /** Stop audible output immediately, then cancel the response exactly once. */
     fun onUserSpeechDetected() {
         val shouldInterrupt = synchronized(lock) {
             if (!ttsPlaying) {
@@ -29,9 +29,9 @@ class BargeInController(
         if (!shouldInterrupt) return
 
         try {
-            cancelResponse()
-        } finally {
             stopTts()
+        } finally {
+            cancelResponse()
         }
     }
 

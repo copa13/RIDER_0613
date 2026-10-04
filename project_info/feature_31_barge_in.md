@@ -5,7 +5,7 @@
 - Microphone: Android AudioRecord, mono PCM16 at 16 kHz.
 - Self-speech rejection: the capture frames pass through the Feature #29 render-reference interface before VAD. TTS render PCM must be sent to the same interface before speaker playback.
 - Speech detection: the existing RiderVad wrapper now invokes sherpa-onnx Silero VAD v5 with 512-sample windows. No amplitude/energy threshold is used.
-- Interruption: speech onset calls the existing Feature #21 BargeInController. Its Feature #31 session is wired to the existing Feature #20 TtsPauseStop MediaPlayer and stops real playback after invalidating/cancelling the current response.
+- Interruption: speech onset calls the existing Feature #21 BargeInController. Its Feature #31 session is wired to the existing Feature #20 TtsPauseStop MediaPlayer and stops audible playback before invalidating/cancelling the current response, so transport cancellation cannot delay the TTS stop.
 - Stale output: CancellableAiResponseState issues generation tokens, cancels the provider request, rejects text from stale tokens, and cancels handles attached after interruption.
 - Android component setup: the app module is a small Android library, not a full RIDER application. Its build downloads the pinned sherpa-onnx AAR and Silero model and validates both SHA-256 hashes.
 
