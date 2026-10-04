@@ -47,7 +47,7 @@ Implemented for #31 only:
 
 Remaining blockers:
 
-- No real AI request/stream or TTS playback runtime exists in the repository. There is no live response/player to cancel or stale audio stream to test; no fake backend or response generation was added.
+- No real AI request/stream exists in the repository. Feature #20 can play and stop files with MediaPlayer, but it exposes no synchronized render PCM; OfflineTTS sample output is not connected to a PCM playback/echo-reference path. There is no live AI response or streamed TTS audio to cancel or verify, and no fake backend or response generation was added.
 - Feature #29's Aec3Processor native dependency is missing. The wrapper is wired to the echo-reference interface but cannot run until that dependency is supplied.
 - The actual microphone → AEC → VAD → AI cancellation → TTS stop path still needs integration and testing on the Android host/device.
 
