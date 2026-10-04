@@ -34,14 +34,21 @@ Project setup: In progress
 
 ## Feature #31 — Barge-in
 
-**Status: BLOCKED — not implemented or end-to-end verified.**
+**Status: BLOCKED — the component path is implemented, but the real RIDER interruption flow is not end-to-end integrated or verified.**
 
-Repository inspection of main found these blockers:
+Implemented for #31 only:
 
-- voice/continuous_listening/sherpa_onnx/Vad.kt is a placeholder: RiderVad.isSpeechDetected() always returns false and does not call sherpa-onnx VAD.
-- The #21 BargeInController only tracks TTS state and calls stopTts; it has no active AI-response cancellation or stale-output protection.
-- voice/barge_in/droidkaigi_gvp/RiderBargeInController.kt uses an amplitude threshold instead of real VAD and is not connected to the VAD/audio/STT/TTS path.
-- The tracked repository has no Android manifest, application entry point, Gradle root/settings/wrapper, or AI-response implementation. app/build.gradle.kts only references app/libs/libwebrtc_arm64.aar, which is not tracked.
-- No sherpa-onnx Android native library or VAD model is tracked. Existing STT/TTS classes are wrappers; there is no application flow connecting microphone input, AI response generation, and audible TTS playback.
+- RiderVad uses sherpa-onnx Silero VAD v5; no energy/amplitude threshold is used.
+- An Android AudioRecord monitor connects microphone PCM through the Feature #29 echo-reference interface to Silero VAD.
+- The existing Feature #21 BargeInController is reused; on speech onset it stops the existing Feature #20 TtsPauseStop MediaPlayer before cancelling/invalidation of active response state. The duplicate amplitude-threshold controller was removed.
+- CancellableAiResponseState provides cancellable request handles, generation tokens, and stale-chunk rejection.
+- A minimal Android library module downloads the pinned sherpa-onnx runtime and model with SHA-256 verification; it does not add an app UI or AI provider.
+- Unit tests were added for cancellation, stale chunks, and one-shot TTS stop behavior.
 
-Without the actual AI request/stream and app playback path, there is no live response to cancel or output stream to guard against stale audio. Adding a fabricated AI implementation or claiming the existing stubs complete would violate the feature requirements. Do not mark #31 complete until the real application/AI path and required Android runtime artifacts are available and the interruption-to-new-turn flow is verified.
+Remaining blockers:
+
+- No real AI request/stream exists in the repository. Feature #20 can play and stop files with MediaPlayer, but it exposes no synchronized render PCM; OfflineTTS sample output is not connected to a PCM playback/echo-reference path. There is no live AI response or streamed TTS audio to cancel or verify, and no fake backend or response generation was added.
+- Feature #29's Aec3Processor native dependency is missing. The wrapper is wired to the echo-reference interface but cannot run until that dependency is supplied.
+- The actual microphone → AEC → VAD → AI cancellation → TTS stop path still needs integration and testing on the Android host/device.
+
+Do not mark Feature #31 complete until the real RIDER host flow is connected and an Android interruption test passes. See project_info/feature_31_barge_in.md.
