@@ -1,0 +1,53 @@
+class RiderVoiceController(
+    private val pipeline: SpeechPipeline
+) {
+
+    private var speaking = false
+
+    fun start() {
+        pipeline.events.collect { event ->
+
+            when (event) {
+
+                is SpeechEvent.TranscriptionCompleted -> {
+                    val text = event.text
+
+                    speaking = false
+
+                    processRiderCommand(text)
+                }
+
+                is SpeechEvent.ResponseDone -> {
+                    speaking = false
+                    pipeline.resumeListening()
+                }
+
+                else -> {
+                    // Ignore other events
+                }
+            }
+        }
+
+        pipeline.start()
+    }
+
+    fun onBargeIn() {
+        if (speaking) {
+            stopCurrentResponse()
+
+            speaking = false
+
+            pipeline.resumeListening()
+        }
+    }
+
+    private fun stopCurrentResponse() {
+        // Stop current TTS
+        // Cancel current AI response
+    }
+
+    private fun processRiderCommand(text: String) {
+        // Feature #32 command processing
+        // Existing RIDER command/brain system goes here
+    }
+}
