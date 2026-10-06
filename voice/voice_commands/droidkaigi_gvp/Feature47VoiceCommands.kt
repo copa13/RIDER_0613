@@ -4,17 +4,14 @@ class Feature47VoiceCommands(
     private val parser: VoiceCommandParser,
     private val executor: VoiceCommandExecutor,
     private val onCommandExecuted: (VoiceCommand) -> Unit = {},
-    private val onCommandFailed: (String) -> Unit = {}
+    private val onCommandRejected: (String) -> Unit = {}
 ) {
 
-    fun handleSpeech(
-        speechText: String
-    ): Boolean {
-
-        val command = parser.parse(speechText)
+    fun handleSpeech(text: String): Boolean {
+        val command = parser.parse(text)
 
         if (command == null) {
-            onCommandFailed(speechText)
+            onCommandRejected(text)
             return false
         }
 
@@ -23,7 +20,7 @@ class Feature47VoiceCommands(
         if (executed) {
             onCommandExecuted(command)
         } else {
-            onCommandFailed(speechText)
+            onCommandRejected(text)
         }
 
         return executed
