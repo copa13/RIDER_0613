@@ -3,135 +3,197 @@ package com.rider.voice_commands.droidkaigi_gvp
 class VoiceCommandParser {
 
     fun parse(input: String): VoiceCommand? {
-
         val text = input
             .trim()
             .lowercase()
+            .replace(Regex("\\s+"), " ")
 
         if (text.isEmpty()) return null
 
-        when {
-            text == "volume up" ||
-            text == "increase volume" ||
-            text == "louder" -> {
-                return VoiceCommand.VolumeUp
+        // DEVICE
+        when (text) {
+            "lock phone" -> return VoiceCommand.LockPhone
+            "open power menu" -> return VoiceCommand.OpenPowerMenu
+            "battery status" -> return VoiceCommand.BatteryStatus
+            "what time is it" -> return VoiceCommand.GetTime
+            "what is the date" -> return VoiceCommand.GetDate
+        }
+
+        // APPS
+        if (text.startsWith("open ")) {
+            val appName = text.removePrefix("open ").trim()
+
+            return when (appName) {
+                "chrome" -> VoiceCommand.OpenApp("Chrome")
+                "whatsapp" -> VoiceCommand.OpenApp("WhatsApp")
+                "youtube" -> VoiceCommand.OpenApp("YouTube")
+                "camera" -> VoiceCommand.OpenApp("Camera")
+                "settings" -> VoiceCommand.OpenApp("Settings")
+                "calculator" -> VoiceCommand.OpenApp("Calculator")
+                "phone" -> VoiceCommand.OpenApp("Phone")
+                "messages" -> VoiceCommand.OpenApp("Messages")
+                "notifications" -> VoiceCommand.Notifications
+                "quick settings" -> VoiceCommand.QuickSettings
+                else -> null
+            }?.let { return it }
+        }
+
+        // CALLS
+        if (text == "dial number") {
+            return VoiceCommand.DialNumber
+        }
+
+        if (text == "call emergency contact") {
+            return VoiceCommand.CallEmergencyContact
+        }
+
+        if (text.startsWith("call ")) {
+            val contact = input
+                .trim()
+                .removePrefix("call ")
+                .trim()
+
+            if (contact.isNotEmpty()) {
+                return VoiceCommand.Call(contact)
             }
+        }
 
-            text == "volume down" ||
-            text == "decrease volume" ||
-            text == "quieter" -> {
-                return VoiceCommand.VolumeDown
-            }
+        // MESSAGES
+        Regex(
+            "^draft message to (.+?) saying (.+)$",
+            RegexOption.IGNORE_CASE
+        ).matchEntire(input.trim())?.let {
+            return VoiceCommand.DraftMessage(
+                contactName = it.groupValues[1].trim(),
+                message = it.groupValues[2].trim()
+            )
+        }
 
-            text == "mute" ||
-            text == "mute volume" -> {
-                return VoiceCommand.Mute
-            }
+        Regex(
+            "^text (.+?) saying (.+)$",
+            RegexOption.IGNORE_CASE
+        ).matchEntire(input.trim())?.let {
+            return VoiceCommand.TextMessage(
+                contactName = it.groupValues[1].trim(),
+                message = it.groupValues[2].trim()
+            )
+        }
 
-            text == "flashlight on" ||
-            text == "turn on flashlight" -> {
-                return VoiceCommand.FlashlightOn
-            }
+        Regex(
+            "^open whatsapp message to (.+)$",
+            RegexOption.IGNORE_CASE
+        ).matchEntire(input.trim())?.let {
+            return VoiceCommand.OpenWhatsAppMessage(
+                contactName = it.groupValues[1].trim()
+            )
+        }
 
-            text == "flashlight off" ||
-            text == "turn off flashlight" -> {
-                return VoiceCommand.FlashlightOff
-            }
+        // ALARMS
+        Regex(
+            "^set alarm for (.+)$",
+            RegexOption.IGNORE_CASE
+        ).matchEntire(input.trim())?.let {
+            return VoiceCommand.SetAlarm(it.groupValues[1].trim())
+        }
 
-            text == "lock" ||
-            text == "lock phone" ||
-            text == "lock screen" -> {
-                return VoiceCommand.LockPhone
-            }
+        Regex(
+            "^wake me at (.+)$",
+            RegexOption.IGNORE_CASE
+        ).matchEntire(input.trim())?.let {
+            return VoiceCommand.WakeAt(it.groupValues[1].trim())
+        }
 
-            text == "open settings" ||
-            text == "settings" -> {
-                return VoiceCommand.OpenSettings
-            }
+        when (text) {
+            "cancel alarm" -> return VoiceCommand.CancelAlarm
+            "show alarms" -> return VoiceCommand.ShowAlarms
+        }
 
-            text == "open power menu" ||
-            text == "power menu" -> {
-                return VoiceCommand.OpenPowerMenu
-            }
+        // TIMERS
+        Regex(
+            "^set timer for (.+)$",
+            RegexOption.IGNORE_CASE
+        ).matchEntire(input.trim())?.let {
+            return VoiceCommand.SetTimer(it.groupValues[1].trim())
+        }
 
-            text == "go back" ||
-            text == "back" -> {
-                return VoiceCommand.GoBack
-            }
+        when (text) {
+            "stop timer" -> return VoiceCommand.StopTimer
+            "snooze timer" -> return VoiceCommand.SnoozeTimer
+            "how much time left" -> return VoiceCommand.TimeLeft
+        }
 
-            text == "go home" ||
-            text == "home" -> {
-                return VoiceCommand.GoHome
-            }
+        // MEDIA
+        when (text) {
+            "play music" -> return VoiceCommand.PlayMusic
+            "pause music" -> return VoiceCommand.PauseMusic
+            "next song" -> return VoiceCommand.NextSong
+            "previous song" -> return VoiceCommand.PreviousSong
+            "stop music" -> return VoiceCommand.StopMusic
+        }
 
-            text == "open recents" ||
-            text == "recent apps" -> {
-                return VoiceCommand.OpenRecents
-            }
+        // VOLUME
+        when (text) {
+            "volume up" -> return VoiceCommand.VolumeUp
+            "volume down" -> return VoiceCommand.VolumeDown
+            "mute" -> return VoiceCommand.Mute
+            "unmute" -> return VoiceCommand.Unmute
+        }
 
-            text == "open notifications" ||
-            text == "notifications" -> {
-                return VoiceCommand.OpenNotifications
-            }
+        // FLASHLIGHT
+        when (text) {
+            "turn on flashlight" -> return VoiceCommand.FlashlightOn
+            "turn off flashlight" -> return VoiceCommand.FlashlightOff
+            "toggle flashlight" -> return VoiceCommand.FlashlightToggle
+        }
 
-            text == "open quick settings" ||
-            text == "quick settings" -> {
-                return VoiceCommand.OpenQuickSettings
-            }
+        // NAVIGATION
+        when (text) {
+            "go back" -> return VoiceCommand.GoBack
+            "go home" -> return VoiceCommand.GoHome
+            "show recent apps" -> return VoiceCommand.RecentApps
+            "open notifications" -> return VoiceCommand.Notifications
+            "open quick settings" -> return VoiceCommand.QuickSettings
+            "scroll down" -> return VoiceCommand.ScrollDown
+            "scroll up" -> return VoiceCommand.ScrollUp
+            "tap confirm" -> return VoiceCommand.TapConfirm
+            "tap cancel" -> return VoiceCommand.TapCancel
+        }
 
-            text == "stop" ||
-            text == "cancel" -> {
-                return VoiceCommand.Stop
-            }
+        // SETTINGS
+        when (text) {
+            "open wi-fi settings",
+            "open wifi settings" ->
+                return VoiceCommand.WifiSettings
 
-            text.startsWith("open ") -> {
-                val appName = text.removePrefix("open ").trim()
+            "open bluetooth settings" ->
+                return VoiceCommand.BluetoothSettings
 
-                if (appName.isNotEmpty()) {
-                    return VoiceCommand.OpenApp(appName)
-                }
-            }
+            "open battery settings" ->
+                return VoiceCommand.BatterySettings
 
-            text.startsWith("call ") -> {
-                val contact = text.removePrefix("call ").trim()
+            "open accessibility settings" ->
+                return VoiceCommand.AccessibilitySettings
 
-                if (contact.isNotEmpty()) {
-                    return VoiceCommand.Call(contact)
-                }
-            }
+            "open notification settings" ->
+                return VoiceCommand.NotificationSettings
 
-            text.startsWith("message ") -> {
-                return parseMessage(text)
-            }
+            "open location settings" ->
+                return VoiceCommand.LocationSettings
+
+            "open hotspot settings" ->
+                return VoiceCommand.HotspotSettings
+        }
+
+        // ASSISTANT
+        when (text) {
+            "stop listening" -> return VoiceCommand.StopListening
+            "pause alex" -> return VoiceCommand.PauseAssistant
+            "resume alex" -> return VoiceCommand.ResumeAssistant
+            "cancel" -> return VoiceCommand.Cancel
+            "repeat" -> return VoiceCommand.Repeat
+            "what can you do" -> return VoiceCommand.WhatCanYouDo
         }
 
         return null
-    }
-
-    private fun parseMessage(text: String): VoiceCommand? {
-
-        val remaining = text.removePrefix("message ").trim()
-
-        val separator = remaining.indexOf(" saying ")
-
-        if (separator <= 0) return null
-
-        val contact = remaining.substring(
-            0,
-            separator
-        ).trim()
-
-        val message = remaining.substring(
-            separator + " saying ".length
-        ).trim()
-
-        if (contact.isEmpty() || message.isEmpty()) {
-            return null
-        }
-
-        return VoiceCommand.MessageDraft(
-            contactName = contact,
-            message = message
-        )
     }
 }
