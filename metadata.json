@@ -1,0 +1,8 @@
+{
+  "name": "RIDER Voice System - Android Voice Assistant Dashboard",
+  "description": "Comprehensive interactive dashboard and control center for the RIDER Android Voice Assistant system, featuring conversation history, persistent memory, continuous listening, modular STT/TTS engines, state machine diagnostics, and latency tracking.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ],
+  "permissions": []
+}
